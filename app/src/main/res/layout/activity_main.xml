@@ -9,6 +9,16 @@
     android:paddingRight="16dp"
     android:orientation="vertical" >
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:text="Cadastro de Pizzas"
+        android:textAlignment="center"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:layout_marginTop="100px"/>
+
     <EditText
         android:id="@+id/edtNome"
         android:layout_marginTop="20dp"
@@ -17,66 +27,52 @@
         android:hint="Nome" />
 
     <EditText
-        android:id="@+id/edtEnd"
-        android:layout_marginTop="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Endereço" />
-
-    <EditText
-        android:id="@+id/edtData"
+        android:id="@+id/edtDesc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:hint="Data de Nascimento"
-        android:inputType="date" />
+        android:hint="Descrição" />
 
-    <LinearLayout
-        android:layout_marginTop="30dp"
+    <RadioGroup
+        android:id="@+id/tamanhos"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:orientation="horizontal" >
+        android:layout_height="140dp" >
 
-        <EditText
-            android:id="@+id/edtNota1"
-            android:layout_width="wrap_content"
+        <RadioButton
+            android:id="@+id/radPeq"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:hint="Nota1"
-            android:inputType="number|numberDecimal"
-            android:tag="Nota1" />
+            android:text="Pequena" />
 
-        <EditText
-            android:id="@+id/edtNota2"
-            android:layout_width="wrap_content"
+        <RadioButton
+            android:id="@+id/radMed"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:inputType="number|numberDecimal"
-            android:hint="Nota2" />
+            android:text="Média" />
 
-        <EditText
-            android:id="@+id/edtNota3"
-            android:layout_width="wrap_content"
+        <RadioButton
+            android:id="@+id/radGrd"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:inputType="number|numberDecimal"
-            android:hint="Nota3" />
-
-        <EditText
-            android:id="@+id/edtNota4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:inputType="number|numberDecimal"
-            android:hint="Nota4" />
-
-    </LinearLayout>
+            android:text="Grande" />
+    </RadioGroup>
 
     <Button
-        android:id="@+id/calcular"
-        android:layout_width="wrap_content"
+        android:id="@+id/gravar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="calcular" />
+        android:background="#255000"
+        android:backgroundTint="#255000"
+        android:text="Gravar"
+        app:iconTint="#FFFFFF" />
+
+    <Button
+        android:id="@+id/menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:backgroundTint="#004ABA"
+        android:text="Menu" />
 
 </LinearLayout>

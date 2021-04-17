@@ -6,7 +6,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,19 +21,44 @@ class Pizza implements Parcelable {
     public String desc;
     public String tam;
 
-    public Pizza(String nome, String end, String nasc, String[] notas, String med){
-        this.cod = nome;
-        this.nome = end;
-        this.desc = nasc;
-        this.tam = notas;
+    public Pizza(int cod, String nome, String desc, String tam){
+        this.cod = cod;
+        this.nome = nome;
+        this.desc = desc;
+        this.tam = tam;
     }
 
     protected Pizza(Parcel in) {
+        cod = in.readInt();
         nome = in.readString();
-        end = in.readString();
-        nasc = in.readString();
-        notas = in.createStringArray();
+        desc = in.readString();
+        tam = in.readString();
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(cod);
+        dest.writeString(nome);
+        dest.writeString(desc);
+        dest.writeString(tam);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Pizza> CREATOR = new Creator<Pizza>() {
+        @Override
+        public Pizza createFromParcel(Parcel in) {
+            return new Pizza(in);
+        }
+
+        @Override
+        public Pizza[] newArray(int size) {
+            return new Pizza[size];
+        }
+    };
 }
 
 public class MainActivity extends AppCompatActivity {
@@ -41,75 +69,62 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button btSalvar = (Button) findViewById(R.id.calcular);
+        Button btSalvar = (Button) findViewById(R.id.gravar);
         btSalvar.setOnClickListener(onClickSalvar());
+
+        Button btMenu = (Button) findViewById(R.id.menu);
+        btMenu.setOnClickListener(onClickMenu());
     }
+
     private View.OnClickListener onClickSalvar() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TextView tNome = (TextView) findViewById(R.id.edtNome);
-                TextView tEnd = (TextView) findViewById(R.id.edtEnd);
-                TextView tData = (TextView) findViewById(R.id.edtData);
-                TextView tN1 = (TextView) findViewById(R.id.edtNota1);
-                TextView tN2 = (TextView) findViewById(R.id.edtNota2);
-                TextView tN3 = (TextView) findViewById(R.id.edtNota3);
-                TextView tN4 = (TextView) findViewById(R.id.edtNota4);
-
                 String nome = tNome.getText().toString();
-                String endereco = tEnd.getText().toString();
-                String data = tData.getText().toString();
-                float n1 = Float.parseFloat(tN1.getText().toString());
-                float n2 = Float.parseFloat(tN2.getText().toString());
-                float n3 = Float.parseFloat(tN3.getText().toString());
-                float n4 = Float.parseFloat(tN4.getText().toString());
-                float med = ((n1+n2+n3+n4)/4);
 
-                String [] notas = {
-                        String.valueOf(n1),
-                        String.valueOf(n2),
-                        String.valueOf(n3),
-                        String.valueOf(n4)
-                };
-               Aluno aluno = new Aluno(nome, endereco, data, notas, String.valueOf(med));
+                TextView tDesc = (TextView) findViewById(R.id.edtDesc);
+                String descricao = tDesc.getText().toString();
 
-                int length = alunosNotas.size()+1;
-                alunosNotas.add(aluno);
-                // arrayList que armazena todos os alunos com suas respectivas informações
-                if(length<=30){
-                    Intent intent = new Intent(MainActivity.this, exibir.class);
-                    Bundle params = new Bundle();
-                    params.putParcelableArrayList("aluno", alunosNotas);
-                    intent.putExtras(params);
-                    startActivityForResult(intent, 2);
-                } else {
-                    throw new Error("Limite 30 alunos");
-                }
+                RadioGroup rTam = (RadioGroup) findViewById(R.id.tamanhos);
+                int radioId = rTam.getCheckedRadioButtonId();
+                RadioButton radioButton = findViewById(radioId);
+                String tamanho = radioButton.getText().toString();
+
+                int cod = pizzas.size()+1;
+                Pizza pizza = new Pizza(cod, nome, descricao, tamanho);
+                pizzas.add(pizza);
+
+                tNome.setText("");
+                tDesc.setText("");
+                rTam.clearCheck();
+
+                Toast.makeText(MainActivity.this, "Pizza Salva com sucesso!",Toast.LENGTH_SHORT).show();
             }
         };
     }
+
+    private View.OnClickListener onClickMenu() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, Menu.class);
+                Bundle params = new Bundle();
+                params.putParcelableArrayList("pizzas", pizzas);
+                intent.putExtras(params);
+                startActivityForResult(intent, 2);
+            }
+        };
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 2) {
             Intent it = data;
             if (it != null) {
-                TextView tNome = (TextView) findViewById(R.id.edtNome);
-                TextView tEnd = (TextView) findViewById(R.id.edtEnd);
-                TextView tData = (TextView) findViewById(R.id.edtData);
-                TextView tN1 = (TextView) findViewById(R.id.edtNota1);
-                TextView tN2 = (TextView) findViewById(R.id.edtNota2);
-                TextView tN3 = (TextView) findViewById(R.id.edtNota3);
-                TextView tN4 = (TextView) findViewById(R.id.edtNota4);
-                tNome.setText("");
-                tEnd.setText("");
-                tData.setText("");
-                tN1.setText("");
-                tN2.setText("");
-                tN3.setText("");
-                tN4.setText("");
                 Bundle args = it.getExtras();
-                alunosNotas = args.getParcelableArrayList("aluno");
+                pizzas = args.getParcelableArrayList("pizzas");
             }
         }
     }
